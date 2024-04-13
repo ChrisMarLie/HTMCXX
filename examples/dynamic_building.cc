@@ -20,7 +20,7 @@ auto main() -> int
         tag::li list_item = tag::li{}(tag::text{fruit});
 
         //Add new style
-        list_item + attr::style("font-size: 50px;");
+        list_item << attr::style("font-size: 50px;");
 
         //Finally move it into the list
         fruit_list << std::move(list_item);

@@ -14,7 +14,7 @@ TEST(HTMCXX, AddDynamicallyAttributeMovement)
   ASSERT_EQ(tag.num_attributes(), 0);
 
   attr::class_name class_name("any-class");
-  tag + attr::id("any-id") + std::move(class_name);
+  tag << attr::id("any-id") << std::move(class_name);
 
   ASSERT_TRUE(tag.has_attributes());
   ASSERT_EQ(tag.num_attributes(), 2);
@@ -29,7 +29,7 @@ TEST(HTMCXX, AddDynamicallyAttributeCopy)
   ASSERT_EQ(tag.num_attributes(), 0);
 
   attr::style style("any: style");
-  tag + style;
+  tag << style;
 
   ASSERT_EQ(tag.num_attributes(), 1);
   ASSERT_TRUE(style.has_value());
@@ -85,7 +85,7 @@ TEST(HTMCXX, GetTag)
   ASSERT_THROW(tag.get<tag::div>(), std::out_of_range);
   
   ASSERT_EQ(tag.get<tag::html>().num_attributes(), 0);
-  tag.get<tag::html>() + attr::style("any: style");
+  tag.get<tag::html>() << attr::style("any: style");
   ASSERT_EQ(tag.get<tag::html>().num_attributes(), 1);
 }
 

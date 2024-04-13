@@ -77,35 +77,17 @@ namespace htmcxx::tags
         //---------------------------------------------------------------
 
         /**
-         * @brief Adds a nested tag to the current element.
+         * @brief Adds a new element or attribute to the current tag.
          *
-         * @tparam T The type of the nested tag to add.
-         * @param element The nested tag to add to the current element.
-         * @return A reference to the modified element after adding the nested tag.
-         *
-         */
-        template <class T>
-        inline Derived &operator<<(T &&element) noexcept
-        {
-            subelements_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(element)));
-            return get_type();
-        }
-
-        //---------------------------------------------------------------
-
-        /**
-         * @brief Adds a new attribute to the current tag.
-         *
-         * @tparam T The type of the attribute to add.
-         * @param attribute The attribute value to add to the tag.
-         * @return A reference to the modified tag after adding the attribute.
+         * @tparam T The type of the element or attribute to add.
+         * @param value The element or attribute value to add to the tag.
+         * @return A reference to the modified tag after adding the element or attribute.
          *
          */
         template <class T>
-        inline Derived &operator+(T &&attribute) noexcept
+        inline Derived &operator<<(T &&value) noexcept
         {
-            attributes_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(attribute)));
-            return get_type();
+            return add(std::forward<T>(value));
         }
 
         /*========================= Other methods =========================*/
@@ -210,8 +192,32 @@ namespace htmcxx::tags
             return searched_type? *searched_type : throw std::out_of_range(error_msg);
         }
 
-    protected:
         //---------------------------------------------------------------
+
+        /**
+         * @brief Adds a new element or attribute to the current tag.
+         *
+         * @tparam T The type of the element or attribute to add.
+         * @param value The element or attribute value to add to the tag.
+         * @return A reference to the modified tag after adding the element or attribute.
+         *
+         */
+        template <class T>
+        inline Derived &add(T &&value) noexcept
+        {
+            if constexpr (std::derived_from<std::decay_t<T>, tags::itag>)
+            {
+                subelements_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(value)));
+            }
+            else
+            {
+                attributes_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(value)));
+            }
+
+            return get_type();
+        }
+
+    protected:
 
         inline html_tag(const std::vector<std::unique_ptr<attributes::iattribute>> &attributes)
         {
