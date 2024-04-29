@@ -7,7 +7,7 @@
 namespace attr = htmcxx::attributes;
 namespace tag = htmcxx::tags;
 
-TEST(HTMCXX, AddDynamicallyAttributeMovement) 
+TEST(Tag, AddDynamicallyAttributeMovement) 
 {
   tag::div tag;
   ASSERT_FALSE(tag.has_attributes());
@@ -21,7 +21,7 @@ TEST(HTMCXX, AddDynamicallyAttributeMovement)
   ASSERT_FALSE(class_name.has_value());
 }
 
-TEST(HTMCXX, AddDynamicallyAttributeCopy) 
+TEST(Tag, AddDynamicallyAttributeCopy) 
 {
   tag::div tag;
   
@@ -35,7 +35,7 @@ TEST(HTMCXX, AddDynamicallyAttributeCopy)
   ASSERT_TRUE(style.has_value());
 }
 
-TEST(HTMCXX, AddDynamicallyTagMovement)
+TEST(Tag, AddDynamicallyTagMovement)
 {
   tag::div tag;
 
@@ -52,7 +52,7 @@ TEST(HTMCXX, AddDynamicallyTagMovement)
   ASSERT_FALSE(button.has_attributes());
 }
 
-TEST(HTMCXX, AddDynamicallyTagCopy) 
+TEST(Tag, AddDynamicallyTagCopy) 
 {
   tag::div tag;
 
@@ -69,7 +69,7 @@ TEST(HTMCXX, AddDynamicallyTagCopy)
   ASSERT_TRUE(div.has_elements());
 }
 
-TEST(HTMCXX, GetTag) 
+TEST(Tag, GetTag) 
 {
   auto tag =  tag::box{}
               (
@@ -89,10 +89,47 @@ TEST(HTMCXX, GetTag)
   ASSERT_EQ(tag.get<tag::html>().num_attributes(), 1);
 }
 
-TEST(HTMCXX, GetAttribute) 
+TEST(Tag, GetAttribute) 
 {
   auto tag = tag::div{attr::style("any: style"), attr::id("any-id")};
 
   ASSERT_EQ(typeid(tag.get<attr::style>()), typeid(attr::style));
   ASSERT_THROW(tag.get<attr::lang>(), std::out_of_range);
+}
+
+TEST(Tag, Clear)
+{
+  auto tag = tag::box{attr::id("any-id"), attr::lang("any"), attr::class_name("any")}
+             (
+                tag::div{},
+                tag::button{},
+                tag::p{}
+             );
+
+  ASSERT_TRUE(tag.has_attributes());
+  tag.clear_attributes();
+  ASSERT_FALSE(tag.has_attributes());
+
+  ASSERT_TRUE(tag.has_elements());
+  tag.clear_elements();
+  ASSERT_FALSE(tag.has_elements());
+}
+
+TEST(Tag, RemoveAll)
+{
+  auto tag = tag::box{attr::id("any-id"), attr::lang("any"), attr::class_name("any")}
+             (
+                tag::div{},
+                tag::button{},
+                tag::p{},
+                tag::div{}
+             );
+
+  ASSERT_EQ(tag.num_attributes(), 3);
+  ASSERT_EQ(tag.remove_all<attr::lang>(), 1);
+  ASSERT_EQ(tag.num_attributes(), 2);
+  
+  ASSERT_EQ(tag.num_elements(), 4);
+  ASSERT_EQ(tag.remove_all<tag::div>(), 2);
+  ASSERT_EQ(tag.num_elements(), 2);
 }

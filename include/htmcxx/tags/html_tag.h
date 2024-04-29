@@ -52,7 +52,7 @@ namespace htmcxx::tags
          * @param attributes Attributes to be added to the HTML element.
          */
         template <class... T>
-        inline html_tag(T &&...attributes)
+        constexpr inline html_tag(T &&...attributes)
         {
             (attributes_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(attributes))), ...);
         }
@@ -120,7 +120,7 @@ namespace htmcxx::tags
         //---------------------------------------------------------------
 
         /**
-         * @brief Check if current tag has nested tags
+         * @brief Check if current tag has nested tags.
          *
          * @returns True if it has nested tags
          */
@@ -138,7 +138,14 @@ namespace htmcxx::tags
         //---------------------------------------------------------------
 
         /**
-         * @brief Check if current tag has attributes
+         * @brief Remove all nested tags from current tag.
+        */
+        constexpr inline void clear_elements() noexcept { subelements_.clear(); }
+
+        //---------------------------------------------------------------
+
+        /**
+         * @brief Check if current tag has attributes.
          *
          * @returns True if it has attributes.
          */
@@ -156,6 +163,13 @@ namespace htmcxx::tags
         //---------------------------------------------------------------
 
         /**
+         * @brief Remove all attributes from current tag.
+        */
+        constexpr inline void clear_attributes() noexcept { attributes_.clear(); }
+
+        //---------------------------------------------------------------
+
+        /**
          * @brief Returns a reference to the first appearance of the nested HTML tag or attribute within the current tag.
          *
          * @tparam T The type of the HTML tag or attribute to search for.
@@ -168,11 +182,10 @@ namespace htmcxx::tags
         {
             T* searched_type = nullptr;
             std::string error_msg;
-            constexpr auto fn_to_search = [](const auto &ptr){ return utils::instanceof<T>(ptr); };
             
             if constexpr (std::derived_from<T, tags::itag>)
             {
-                auto it = std::ranges::find_if(subelements_, fn_to_search);
+                auto it = std::ranges::find_if(subelements_, search_by_type<T>);
 
                 if(it != subelements_.end())
                     searched_type = dynamic_cast<T*>(it->get());
@@ -181,7 +194,7 @@ namespace htmcxx::tags
             }
             else
             {
-                auto it = std::ranges::find_if(attributes_, fn_to_search);
+                auto it = std::ranges::find_if(attributes_, search_by_type<T>);
                 
                 if(it != attributes_.end())
                     searched_type = dynamic_cast<T*>(it->get());
@@ -217,6 +230,32 @@ namespace htmcxx::tags
             return get_type();
         }
 
+        //---------------------------------------------------------------
+
+        /*
+         * @brief Removes all the elements or attributes of the specified type T attached in current tag.
+         *
+         * @return Number of elements or attributes removed.
+        */
+        template <class T>
+        inline std::size_t remove_all() noexcept
+        {
+            std::size_t elements_erased{0};
+
+            if constexpr(std::derived_from<T, tags::itag>)
+            {
+                elements_erased = std::erase_if(subelements_, search_by_type<T>);
+            }
+            else 
+            {
+                elements_erased = std::erase_if(attributes_, search_by_type<T>);
+            }
+
+            return elements_erased;
+        }
+
+        //--------------------------------------------------------------- 
+
     protected:
 
         inline html_tag(const std::vector<std::unique_ptr<attributes::iattribute>> &attributes)
@@ -246,11 +285,14 @@ namespace htmcxx::tags
             return copy;
         }
 
-        //---------------------------------------------------------------
+        /*========================= Attributes =========================*/
 
         std::vector<std::unique_ptr<attributes::iattribute>> attributes_;
 
         std::vector<std::unique_ptr<tags::itag>> subelements_;
+
+        template<class T>
+        static constexpr auto search_by_type = [](const auto &ptr){ return utils::instanceof<T>(ptr); };
     };
 
     /*-------- Not generated classes because of his name or other considerations ----------*/
