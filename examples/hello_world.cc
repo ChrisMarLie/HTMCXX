@@ -20,7 +20,10 @@ auto main() -> int
     */
     auto content =  tag::section{attr::id("hello-world-container")}
                     (
-                        tag::p{attr::style("color: red;")}(tag::text("Hello World!"))
+                        tag::p{attr::style("color: red;")}
+                        (
+                            "Hello World!"
+                        )
                     );
 
 

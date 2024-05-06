@@ -17,10 +17,10 @@ auto main() -> int
     for(auto fruit : {"orange", "apple", "banana", "cherry", "strawberry"})
     {   
         //Create new li with the fruit name inside
-        tag::li list_item = tag::li{}(tag::text{fruit});
-
-        //Add new style
-        list_item << attr::style("font-size: 50px;");
+        tag::li list_item = tag::li{attr::style("font-size: 50px;")}
+                            (
+                                fruit
+                            );
 
         //Finally move it into the list
         fruit_list << std::move(list_item);

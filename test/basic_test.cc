@@ -69,6 +69,23 @@ TEST(Tag, AddDynamicallyTagCopy)
   ASSERT_TRUE(div.has_elements());
 }
 
+TEST(Tag, AddString)
+{
+  auto paragraph = tag::p{}("Hello");
+  ASSERT_EQ(paragraph.num_elements(), 1);
+  ASSERT_EQ((std::string)paragraph.get<tag::text>(), "Hello\n");
+
+  std::string text = "World";
+  auto paragraph2 = tag::p{}(text);
+  ASSERT_EQ(paragraph2.num_elements(), 1);
+  ASSERT_EQ((std::string)paragraph2.get<tag::text>(), text + "\n");
+
+  auto paragraph3 = tag::p{}(std::move(text));
+  ASSERT_EQ(paragraph3.num_elements(), 1);
+  ASSERT_TRUE(text.empty());
+  ASSERT_EQ((std::string)paragraph3.get<tag::text>(), "World\n");
+}
+
 TEST(Tag, GetTag) 
 {
   auto tag =  tag::box{}

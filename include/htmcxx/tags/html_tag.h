@@ -13,7 +13,8 @@
 
 namespace htmcxx::tags
 {
-
+    class text; // forward declaration just for the current file organization
+  
     /**
      * @brief Generic HTML element without any specific semantic meaning.
      *
@@ -33,11 +34,11 @@ namespace htmcxx::tags
 
         //---------------------------------------------------------------
 
-        html_tag &operator=(html_tag &&) = default;
+        html_tag &operator=(html_tag &&) noexcept = default;
 
         /*========================= Ctor && Dtor =========================*/
 
-        html_tag(html_tag &&) = default;
+        html_tag(html_tag &&) noexcept = default;
 
         //---------------------------------------------------------------
 
@@ -52,7 +53,7 @@ namespace htmcxx::tags
          * @param attributes Attributes to be added to the HTML element.
          */
         template <class... T>
-        constexpr inline html_tag(T &&...attributes)
+        inline html_tag(T &&...attributes)
         {
             (attributes_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(attributes))), ...);
         }
@@ -70,7 +71,7 @@ namespace htmcxx::tags
         template <class... T>
         inline Derived &operator()(T &&...elements) noexcept
         {
-            (subelements_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(elements))), ...);
+            (subelements_.emplace_back(convert2itag(std::forward<T>(elements))), ...);
             return get_type();
         }
 
@@ -124,7 +125,7 @@ namespace htmcxx::tags
          *
          * @returns True if it has nested tags
          */
-        inline bool has_elements() const noexcept { return not subelements_.empty(); }
+        inline bool has_elements() const noexcept { return !subelements_.empty(); }
 
         //---------------------------------------------------------------
 
@@ -133,14 +134,14 @@ namespace htmcxx::tags
          *
          * @returns Number of elements.
          */
-        constexpr inline size_t num_elements() const noexcept { return subelements_.size(); }
+        inline size_t num_elements() const noexcept { return subelements_.size(); }
 
         //---------------------------------------------------------------
 
         /**
          * @brief Remove all nested tags from current tag.
         */
-        constexpr inline void clear_elements() noexcept { subelements_.clear(); }
+        inline void clear_elements() noexcept { subelements_.clear(); }
 
         //---------------------------------------------------------------
 
@@ -149,7 +150,7 @@ namespace htmcxx::tags
          *
          * @returns True if it has attributes.
          */
-        constexpr inline bool has_attributes() const noexcept { return not attributes_.empty(); }
+        inline bool has_attributes() const noexcept { return !attributes_.empty(); }
 
         //---------------------------------------------------------------
 
@@ -158,14 +159,14 @@ namespace htmcxx::tags
          *
          * @returns Number of attributes.
          */
-        constexpr inline size_t num_attributes() const noexcept { return attributes_.size(); }
+        inline size_t num_attributes() const noexcept { return attributes_.size(); }
 
         //---------------------------------------------------------------
 
         /**
          * @brief Remove all attributes from current tag.
         */
-        constexpr inline void clear_attributes() noexcept { attributes_.clear(); }
+        inline void clear_attributes() noexcept { attributes_.clear(); }
 
         //---------------------------------------------------------------
 
@@ -220,7 +221,7 @@ namespace htmcxx::tags
         {
             if constexpr (std::derived_from<std::decay_t<T>, tags::itag>)
             {
-                subelements_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(value)));
+                subelements_.emplace_back(convert2itag(std::forward<T>(value)));
             }
             else
             {
@@ -258,7 +259,7 @@ namespace htmcxx::tags
 
     protected:
 
-        inline html_tag(const std::vector<std::unique_ptr<attributes::iattribute>> &attributes)
+        inline explicit html_tag(const std::vector<std::unique_ptr<attributes::iattribute>> &attributes)
         {
             std::ranges::for_each(attributes,
                                   [this](const auto &attr_ptr)
@@ -291,9 +292,26 @@ namespace htmcxx::tags
 
         std::vector<std::unique_ptr<tags::itag>> subelements_;
 
+    private:
         template<class T>
         static constexpr auto search_by_type = [](const auto &ptr){ return utils::instanceof<T>(ptr); };
+    
+        //---------------------------------------------------------------
+
+        template <class T>
+        std::unique_ptr<tags::itag> convert2itag(T &&val)
+        {
+            if constexpr (std::is_convertible_v<T, std::string>)
+            {
+                return std::make_unique<tags::text>(std::forward<T>(val));
+            }
+            else 
+            {
+                return std::make_unique<std::decay_t<T>>(std::forward<T>(val));
+            }
+        }
     };
+
 
     /*-------- Not generated classes because of his name or other considerations ----------*/
 
@@ -361,7 +379,9 @@ namespace htmcxx::tags
     class text : public itag
     {
     public:
-        text(const std::string &value) : value_{value} {}
+        explicit text(const std::string &value = "") : value_{value} {}
+
+        explicit text(std::string &&value) : value_{std::move(value)} {}
 
         inline explicit operator std::string() const override
         {
@@ -382,7 +402,7 @@ namespace htmcxx::tags
     class doctype final : public text
     {
     public:
-        doctype() : text("<!DOCTYPE html>") {}
+        explicit doctype() : text("<!DOCTYPE html>") {}
     };
 
 } // namespace htmcxx::tags

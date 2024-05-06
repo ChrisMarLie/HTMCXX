@@ -28,7 +28,7 @@ Building HTML is very easy. To create a tag, you simply need to create an object
 auto tag = div{id("my-id")};
 
 //Add nested paragraph inside with red color style
-tag = tag(p{style("color: red;")});
+tag << p{style("color: red;")};
 ```
 Finally, HTML tags can be easily cast to a string:
 ```
