@@ -5,17 +5,25 @@
 **HTMCXX** is a lightweight header-only library for building HTML with C++ syntax. Each HTML tag and attribute has its own class with a name that matches those tags and attributes ([except for a few exceptions](#name-exceptions-and-special-tags)).
 
 ## Getting started
-Before we begin, it will be necessary to have installed:
-- [gcc](https://gcc.gnu.org/releases.html) with C++23 support (currently just gcc is supported).
-- [CMake](https://cmake.org/download/) 3.25 or higher.
-- [vcpkg](https://github.com/microsoft/vcpkg?tab=readme-ov-file) in order to download the necessary dependencies.
+### Requirements
+- C++ supported compiler:
+
+    | Compiler                                      | Minimun Version      |
+    |:---------------------------------------------:|:--------------------:|
+    | [gcc](https://gcc.gnu.org/releases.html)      | 14                   |  
+    | [clang](https://releases.llvm.org/)           | 18                   |
+
+- [CMake](https://cmake.org/download/) >= 3.28.
+- [vcpkg](https://github.com/microsoft/vcpkg?tab=readme-ov-file) to manage dependencies. Note: *VCPKG_ROOT* environment variable must be set as the root of the vcpkg instance [to run vcpkg with CMake Presets](https://learn.microsoft.com/en-us/vcpkg/users/buildsystems/cmake-integration#cmake_toolchain_file).
+
+### Building
 
 Once you have obtained the necessary tools, you will need to download the project:
 ```
 $ git clone https://github.com/ChrisMarLie/HTMCXX.git
 $ cd HTMCXX
 ```
-Next, you should compile the project;
+And build it with following command:
 ```
 $ cmake --workflow --preset default
 ```
@@ -45,13 +53,13 @@ As some HTML names coincide with reserved words of C++, some names change in rel
  - **TAGS**
 
     | ORIGINAL      | RENAMED              |
-    |---------------|----------------------|
+    |:-------------:|:--------------------:|
     | template      | template_name        |
 
  - **ATTRIBUTES**
 
     | ORIGINAL      | RENAMED              |
-    |---------------|----------------------|
+    |:-------------:|:--------------------:|
     | for           | for_name             |
     | default       | default_name         |
     | class         | class_name           |
@@ -59,7 +67,7 @@ As some HTML names coincide with reserved words of C++, some names change in rel
 Also, there are some special HTML tags for **special functionality**:
 
 | NAME          | DESCRIPTION          |
-|---------------|----------------------|
+|:-------------:|----------------------|
 | box           | Used to wrap HTML elements that are not associated with a specific tag, formatting their children into a column             |
 | text       | Used to indicate plain text         |
 

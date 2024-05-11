@@ -1,7 +1,7 @@
 #ifndef __HTMCXX_UTILS__
 #define __HTMCXX_UTILS__
 
-#include <cxxabi.h>
+#include <nameof.hpp>
 #include <memory>
 #include <ranges>
 #include <string>
@@ -9,18 +9,10 @@
 namespace htmcxx::utils
 {   
     template<class T>
-    std::string get_class_name(const T &object)
+    std::string get_class_name([[maybe_unused]]const T &object)
     { 
-        char* class_with_namespace = abi::__cxa_demangle(typeid(object).name(), 0, 0, 0);
-
-        auto class_name = std::string(class_with_namespace) | std::views::take_while([](const char& c){ return c != '<';})
-                                                            | std::views::reverse 
-                                                            | std::views::take_while([](const char& c){ return c != ':';}) 
-                                                            | std::views::reverse;
-
-        std::free(class_with_namespace);
-
-        return std::string(std::make_move_iterator(class_name.begin()), std::make_move_iterator(class_name.end()));     
+        
+        return std::string(NAMEOF_SHORT_TYPE_RTTI(object));
     }
 
     template<typename Base, typename T>

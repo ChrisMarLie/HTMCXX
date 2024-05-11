@@ -97,8 +97,8 @@ TEST(Tag, GetTag)
                 )
               );
 
-  ASSERT_EQ(typeid(tag.get<tag::html>()), typeid(tag::html));
-  ASSERT_EQ(typeid(tag.get<tag::html>().get<tag::div>()), typeid(tag::div));
+  ASSERT_EQ(typeid(decltype(tag.get<tag::html>())), typeid(tag::html));
+  ASSERT_EQ(typeid(decltype(tag.get<tag::html>().get<tag::div>())), typeid(tag::div));
   ASSERT_THROW(tag.get<tag::div>(), std::out_of_range);
   
   ASSERT_EQ(tag.get<tag::html>().num_attributes(), 0);
@@ -110,7 +110,7 @@ TEST(Tag, GetAttribute)
 {
   auto tag = tag::div{attr::style("any: style"), attr::id("any-id")};
 
-  ASSERT_EQ(typeid(tag.get<attr::style>()), typeid(attr::style));
+  ASSERT_EQ(typeid(decltype(tag.get<attr::style>())), typeid(attr::style));
   ASSERT_THROW(tag.get<attr::lang>(), std::out_of_range);
 }
 
