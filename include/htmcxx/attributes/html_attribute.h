@@ -17,23 +17,24 @@ namespace htmcxx::attributes
     public:
         /*========================= Copies && Moves =========================*/
 
-        html_attribute &operator=(html_attribute &&) = default;
+        html_attribute &operator=(html_attribute&&) = default;
 
         //---------------------------------------------------------------
 
-        html_attribute &operator=(html_attribute &) = default;
+        html_attribute &operator=(const html_attribute&) = default;
+
+        //---------------------------------------------------------------
+
+        html_attribute(html_attribute&&) = default;
+
+        //---------------------------------------------------------------
+
+        html_attribute(const html_attribute&) = default;
+
 
         /*========================= Ctor && Dtor =========================*/
 
         inline html_attribute(const std::string &value) : value_{value} {}
-
-        //---------------------------------------------------------------
-
-        html_attribute(html_attribute &&) = default;
-
-        //---------------------------------------------------------------
-
-        html_attribute(html_attribute &) = default;
 
         //---------------------------------------------------------------
 

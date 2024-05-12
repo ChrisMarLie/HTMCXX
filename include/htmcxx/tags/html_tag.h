@@ -68,11 +68,11 @@ namespace htmcxx::tags
          * @return A reference to the modified element after adding the nested tags.
          *
          */
-        template <class... T>
-        inline Derived &operator()(T &&...elements) noexcept
+        template <class Self, class... T>
+        inline Self&& operator()(this Self&& self, T &&...elements) noexcept
         {
-            (subelements_.emplace_back(convert2itag(std::forward<T>(elements))), ...);
-            return get_type();
+            (self.subelements_.emplace_back(self.convert2itag(std::forward<T>(elements))), ...);
+            return std::forward<Self>(self);
         }
 
         //---------------------------------------------------------------
@@ -85,10 +85,10 @@ namespace htmcxx::tags
          * @return A reference to the modified tag after adding the element or attribute.
          *
          */
-        template <class T>
-        inline Derived &operator<<(T &&value) noexcept
+        template <class Self, class T>
+        inline Self&& operator<<(this Self&& self, T &&value) noexcept
         {
-            return add(std::forward<T>(value));
+            return self.add(std::forward<T>(value));
         }
 
         /*========================= Other methods =========================*/
@@ -216,19 +216,19 @@ namespace htmcxx::tags
          * @return A reference to the modified tag after adding the element or attribute.
          *
          */
-        template <class T>
-        inline Derived &add(T &&value) noexcept
+        template <class Self, class T>
+        inline Self&& add(this Self&& self, T &&value) noexcept
         {
             if constexpr (std::derived_from<std::decay_t<T>, tags::itag>)
             {
-                subelements_.emplace_back(convert2itag(std::forward<T>(value)));
+                self.subelements_.emplace_back(self.convert2itag(std::forward<T>(value)));
             }
             else
             {
-                attributes_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(value)));
+                self.attributes_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(value)));
             }
 
-            return get_type();
+            return std::forward<Self>(self);
         }
 
         //---------------------------------------------------------------
@@ -267,15 +267,8 @@ namespace htmcxx::tags
         }
 
         //---------------------------------------------------------------
-
-        inline Derived &get_type() noexcept
-        {
-            return *dynamic_cast<Derived *>(this);
-        }
-
-        //---------------------------------------------------------------
-
-        inline std::unique_ptr<itag> clone() const override
+        
+        std::unique_ptr<itag> clone() const noexcept override
         {
             std::unique_ptr<html_tag> copy(new Derived(attributes_));
 
@@ -320,7 +313,7 @@ namespace htmcxx::tags
     public:
         using html_tag<template_name>::html_tag;
 
-        std::string tag_name() const override { return "template"; }
+        constexpr std::string tag_name() const override { return "template"; }
     };
 
     //----------------------------------------------------------------------------------
@@ -388,7 +381,7 @@ namespace htmcxx::tags
             return this->tabulation_ + value_ + "\n";
         }
 
-        inline std::unique_ptr<itag> clone() const override
+        std::unique_ptr<itag> clone() const noexcept override
         {
             return std::make_unique<text>(this->value_);
         }
