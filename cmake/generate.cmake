@@ -2,7 +2,7 @@ include(cmake/templates.cmake)
 
 function(generate_tags_file)
 
-    set(tags_file_name include/htmcxx/tags/tags.h)
+    set(tags_file_name src/tags/tags.cc)
 
     if(NOT EXISTS ${tags_file_name})
         file(WRITE ${tags_file_name} "${header_tags_template}")
@@ -18,7 +18,7 @@ endfunction()
 
 function(generate_attributes_file)
 
-    set(attributes_file_name include/htmcxx/attributes/attributes.h)
+    set(attributes_file_name src/attributes/attributes.cc)
 
     if(NOT EXISTS ${attributes_file_name})
         file(WRITE ${attributes_file_name} "${header_attributes_template}")

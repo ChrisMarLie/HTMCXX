@@ -1,5 +1,4 @@
-#ifndef __HTMCXX_HTML_TAG__
-#define __HTMCXX_HTML_TAG__
+module;
 
 #include <algorithm>
 #include <format>
@@ -8,10 +7,14 @@
 #include <string>
 #include <ranges>
 #include <vector>
-#include "htmcxx/tags/itag.h"
-#include "htmcxx/attributes/iattribute.h"
 
-namespace htmcxx::tags
+export module htmcxx:tags.core;
+
+export import :tags.interface;
+export import :attributes.interface;
+import :utils;
+
+export namespace htmcxx::tags
 {
     class text; // forward declaration just for the current file organization
   
@@ -399,5 +402,3 @@ namespace htmcxx::tags
     };
 
 } // namespace htmcxx::tags
-
-#endif //__HTMCXX_HTML_ELEMENT__

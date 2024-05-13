@@ -1,9 +1,11 @@
-#ifndef __HTMCXX_IATTRIBUTE__
-#define __HTMCXX_IATTRIBUTE__
+module;
 
 #include <string>
+#include <memory>
 
-namespace htmcxx::attributes
+export module htmcxx:attributes.interface;
+
+export namespace htmcxx::attributes
 {
     class iattribute
     {
@@ -16,5 +18,3 @@ namespace htmcxx::attributes
     };
 
 } // namespace htmcxx::attributes
-
-#endif //__HTMCXX_IATTRIBUTE__

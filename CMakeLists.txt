@@ -6,11 +6,11 @@ include(cmake/setup.cmake)
 find_package(nameof CONFIG REQUIRED)
 
 # HTMCXX build
-add_library(htmcxx INTERFACE)
+add_library(htmcxx)
 add_library(htmcxx::htmcxx ALIAS htmcxx)
 
-target_include_directories(htmcxx INTERFACE include)
-target_link_libraries(htmcxx INTERFACE nameof::nameof)
+target_link_libraries(htmcxx PRIVATE nameof::nameof)
 
+add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(test)

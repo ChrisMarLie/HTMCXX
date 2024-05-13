@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 #include <type_traits>
-#include "htmcxx/attributes/attributes.h" 
-#include "htmcxx/tags/prebuilds.h"
-#include "htmcxx/tags/tags.h" 
+
+import htmcxx;
 
 namespace attr = htmcxx::attributes;
 namespace tag = htmcxx::tags;

@@ -1,7 +1,6 @@
 #include <fstream>
-#include "htmcxx/attributes/attributes.h" 
-#include "htmcxx/tags/prebuilds.h"
-#include "htmcxx/tags/tags.h" 
+
+import htmcxx;
 
 namespace attr = htmcxx::attributes;
 namespace tag = htmcxx::tags;
@@ -27,7 +26,7 @@ auto main() -> int
     }
     
     // Copy content of prebuilding HTML5 template
-    auto content = tag::prebuilds::HTML5;
+    auto content = htmcxx::HTML5;
 
     // Add list into body tag
     content.get<tag::html>().get<tag::body>() << std::move(fruit_list);

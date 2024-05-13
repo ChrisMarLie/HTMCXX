@@ -1,14 +1,16 @@
-#ifndef __HTMCXX_HTML_ATTRIBUTE__
-#define __HTMCXX_HTML_ATTRIBUTE__
+module;
 
 #include <format>
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include "htmcxx/utils.h"
-#include "htmcxx/attributes/iattribute.h"
+#include <memory>
 
-namespace htmcxx::attributes
+export module htmcxx:attributes.core;
+export import :attributes.interface;
+import :utils;
+
+export namespace htmcxx::attributes
 {
 
     template <class Derived>
@@ -98,5 +100,3 @@ namespace htmcxx::attributes
     };
 
 } // namespace htmcxx::attributes
-
-#endif //__HTMCXX_HTML_ATTRIBUTE__

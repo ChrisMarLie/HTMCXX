@@ -1,10 +1,9 @@
-#ifndef __HTMCXX_PREBUILDS__
-#define __HTMCXX_PREBUILDS__
+export module htmcxx;
 
-#include "htmcxx/tags/tags.h"
-#include "htmcxx/attributes/attributes.h"
+export import :tags.generated;
+export import :attributes.generated;
 
-namespace htmcxx::tags::prebuilds
+export namespace htmcxx
 {
     const tags::box HTML5 =
         tags::box{}
@@ -22,5 +21,3 @@ namespace htmcxx::tags::prebuilds
             )
         );
 }
-
-#endif //__HTMCXX_PREBUILDS__

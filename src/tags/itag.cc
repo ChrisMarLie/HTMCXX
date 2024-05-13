@@ -1,10 +1,12 @@
-#ifndef __HTMCXX_ITAG__
-#define __HTMCXX_ITAG__
+module;
 
 #include <string>
-#include "htmcxx/utils.h"
+#include <memory>
 
-namespace htmcxx::tags
+export module htmcxx:tags.interface;
+import :utils;
+
+export namespace htmcxx::tags
 {
 
     class itag
@@ -26,5 +28,3 @@ namespace htmcxx::tags
     };
 
 } // namespace htmcxx::tags
-
-#endif //__HTMCXX_ITAG__

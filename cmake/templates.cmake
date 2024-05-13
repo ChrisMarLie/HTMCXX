@@ -12,19 +12,16 @@ set(tags_template
 ")
 
 set(header_tags_template 
-"#ifndef __HTMCXX_TAGS__
-#define __HTMCXX_TAGS__
+"export module htmcxx:tags.generated;
+export import :tags.core;
 
-#include \"htmcxx/tags/html_tag.h\"
-
-namespace htmcxx::tags
+export namespace htmcxx::tags
 {\n")
 
 set(footer_tags_template 
 "
 } //namespace htmcxx::tags
-
-#endif //__HTMCXX_TAGS__")
+")
 
 set(tags_list a abbr acronym address applet area article aside audio 
                   b base basefont bdi bdo big blockquote body br button 
@@ -62,19 +59,20 @@ set(attributes_template
 ")
 
 set(header_attributes_template 
-"#ifndef __HTMCXX_ATTRIBUTES__
-#define __HTMCXX_ATTRIBUTES__
+"module;
 
-#include \"htmcxx/attributes/html_attribute.h\"
+#include <string>
 
-namespace htmcxx::attributes
+export module htmcxx:attributes.generated;
+export import :attributes.core;
+
+export namespace htmcxx::attributes
 {\n")
 
 set(footer_attributes_template 
 "
 } //namespace htmcxx::attributes
-
-#endif //__HTMCXX_ATTRIBUTES__")
+")
 
 set(attributes_list accept  accesskey action align allow allowfullscreen allowpaymentrequest alt async autocomplete autofocus autoplay
                             bgcolor border buffered
