@@ -1,0 +1,7 @@
+<map id="htmcxx::tags::text" name="htmcxx::tags::text">
+<area shape="rect" id="Node000001" title="Represents plain text for HTML." alt="" coords="18,79,159,104"/>
+<area shape="rect" id="Node000003" href="$classhtmcxx_1_1tags_1_1doctype.html" title=" " alt="" coords="5,152,172,177"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="91,118,91,152,86,152,86,118"/>
+<area shape="rect" id="Node000002" href="$classhtmcxx_1_1tags_1_1itag.html" title=" " alt="" coords="19,5,159,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,44,91,79,86,79,86,44"/>
+</map>
