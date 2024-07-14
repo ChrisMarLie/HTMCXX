@@ -13,12 +13,25 @@
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
             }
+        },
+        {
+            "name": "docs",
+            "inherits": "default",
+            "hidden": false,
+            "cacheVariables": {
+                "GENERATE_DOCS": "ON"
+            }
         }
     ],
     "buildPresets": [
         {
             "name": "default",
             "configurePreset": "default",
+            "jobs": 5
+        },
+        {
+            "name": "docs",
+            "configurePreset": "docs",
             "jobs": 5
         }
     ],
@@ -33,7 +46,13 @@
                 "noTestsAction": "error",
                 "stopOnFailure": true
             }
+        },
+        {
+            "name": "docs",
+            "configurePreset": "docs",
+            "inherits": "default"
         }
+
     ],
     "workflowPresets": [
         {
@@ -50,6 +69,23 @@
                 {
                     "type": "test",
                     "name": "default"
+                }
+            ]
+        },
+        {
+            "name": "docs",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "docs"
+                },
+                {
+                    "type": "build",
+                    "name": "docs"
+                },
+                {
+                    "type": "test",
+                    "name": "docs"
                 }
             ]
         }

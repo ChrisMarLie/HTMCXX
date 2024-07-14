@@ -2,6 +2,9 @@
 
 set(tags_template 
 "    
+    /**
+     * @brief Class that represents {template} tag
+     */
     class {template} final : public html_tag<{template}>
     {
     public:
@@ -52,6 +55,9 @@ set(tags_list a abbr acronym address applet area article aside audio
 
 set(attributes_template 
 "
+    /**
+     * @brief Class that represents {template} attribute
+     */
     class {template} : public html_attribute<{template}>
     {
     public:

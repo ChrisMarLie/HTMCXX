@@ -32,11 +32,15 @@ $ cmake --workflow --preset default
 
 Building HTML is very easy. To create a tag, you simply need to create an object of the type you need, and when doing so, you can pass as many HTML attributes as you want, also as objects. To add nested tags within the tag, you simply call your HTML tag as if it were a function, and its parameters are those nested tags. Example (without namespaces):
 ```
-//Create new div tag with id attribute
-auto tag = div{id("my-id")};
-
-//Add nested paragraph inside with red color style
-tag << p{style("color: red;")};
+//Create new section tag with id attribute, and a paragraph inside
+auto tag =  tag::section{attr::id("hello-world-container")}
+            (
+                tag::p{attr::style("color: red;")}
+                (
+                    "Hello World!"
+                )
+            );
+            
 ```
 Finally, HTML tags can be easily cast to a string:
 ```
@@ -44,7 +48,7 @@ Finally, HTML tags can be easily cast to a string:
 std::cout << (std::string)tag << std::endl;
 ```
 
-Check more usages in [examples](/examples)
+Check more usages in [examples](/examples) and documentation in [HTMCXX](https://chrismarlie.github.io/HTMCXX/)
 
 ## Name exceptions and special tags
 

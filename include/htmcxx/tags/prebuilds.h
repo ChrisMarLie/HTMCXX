@@ -4,8 +4,15 @@
 #include "htmcxx/tags/tags.h"
 #include "htmcxx/attributes/attributes.h"
 
+/** @file prebuilds.h
+ *  @brief Ready-made tags and attributes to aid in the development process
+ */
+
 namespace htmcxx::tags::prebuilds
 {
+    /**
+     * @brief Prebuild HTML5 template with head, body, and empty title.
+     */
     const tags::box HTML5 =
         tags::box{}
         (
