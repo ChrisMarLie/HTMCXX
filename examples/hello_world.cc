@@ -1,7 +1,5 @@
 #include <fstream>
-#include "htmcxx/attributes/attributes.h" 
-#include "htmcxx/tags/prebuilds.h"
-#include "htmcxx/tags/tags.h" 
+#include "htmcxx.h" 
 
 namespace attr = htmcxx::attributes;
 namespace tag = htmcxx::tags;
