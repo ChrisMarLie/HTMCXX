@@ -9,36 +9,76 @@
     "configurePresets": [
         {
             "name": "default",
+            "hidden": true,
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
             }
         },
         {
+            "name": "release",
+            "inherits": "default",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "tests",
+            "inherits": "release",
+            "cacheVariables": {
+                "GENERATE_TESTS": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "examples",
+            "inherits": "release",
+            "cacheVariables": {
+                "GENERATE_EXAMPLES": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
             "name": "docs",
             "inherits": "default",
-            "hidden": false,
             "cacheVariables": {
-                "GENERATE_DOCS": "ON"
+                "GENERATE_DOCS": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
             }
         }
     ],
     "buildPresets": [
         {
             "name": "default",
-            "configurePreset": "default",
-            "jobs": 5
+            "jobs": 5,
+            "hidden": true
+        },
+        {
+            "name": "tests",
+            "inherits": "default",
+            "configurePreset": "tests"
+        },
+        {
+            "name": "examples",
+            "inherits": "default",
+            "configurePreset": "examples"
         },
         {
             "name": "docs",
-            "configurePreset": "docs",
-            "jobs": 5
+            "inherits": "default",
+            "configurePreset": "docs"
         }
     ],
     "testPresets": [
         {
             "name": "default",
-            "configurePreset": "default",
+            "configurePreset": "tests",
             "output": {
                 "outputOnFailure": true
             },
@@ -46,25 +86,34 @@
                 "noTestsAction": "error",
                 "stopOnFailure": true
             }
-        },
-        {
-            "name": "docs",
-            "configurePreset": "docs",
-            "inherits": "default"
         }
-
     ],
     "workflowPresets": [
         {
-            "name": "default",
+            "name": "examples",
+            "displayName": "Build Examples",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "default"
+                    "name": "examples"
                 },
                 {
                     "type": "build",
-                    "name": "default"
+                    "name": "examples"
+                }
+            ]
+        },
+        {
+            "name": "tests",
+            "displayName": "Build Tests",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "tests"
+                },
+                {
+                    "type": "build",
+                    "name": "tests"
                 },
                 {
                     "type": "test",
@@ -74,6 +123,7 @@
         },
         {
             "name": "docs",
+            "displayName": "Build Docs",
             "steps": [
                 {
                     "type": "configure",
@@ -81,10 +131,6 @@
                 },
                 {
                     "type": "build",
-                    "name": "docs"
-                },
-                {
-                    "type": "test",
                     "name": "docs"
                 }
             ]

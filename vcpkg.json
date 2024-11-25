@@ -1,7 +1,14 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-    "dependencies": [
-      "gtest",
-      "nameof"
-    ]
+    "dependencies": [ "nameof" ],
+    "features": {
+      "examples": {
+        "description": "Build Examples",
+        "dependencies": [ "crow" ]
+      },
+      "tests": {
+        "description": "Build Tests",
+        "dependencies": [ "gtest" ]
+      }
+    }
   }

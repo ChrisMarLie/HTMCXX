@@ -1,9 +1,8 @@
 #include <fstream>
 #include "htmcxx.h"
 
-namespace attr = htmcxx::attributes;
-namespace tag = htmcxx::tags;
-
+using namespace htmcxx;
+using namespace htmcxx::tags;
 
 auto main() -> int
 {
@@ -11,24 +10,24 @@ auto main() -> int
     std::ofstream index_html("index.html");
 
     //Create an ul, and add every value from list of values
-    tag::ul fruit_list;
+    ul fruit_list;
     for(auto fruit : {"orange", "apple", "banana", "cherry", "strawberry"})
     {   
         //Create new li with the fruit name inside
-        tag::li list_item = tag::li{attr::style("font-size: 50px;")}
-                            (
-                                fruit
-                            );
+        li list_item = li{attributes::style("font-size: 50px;")}
+                        (
+                            fruit
+                        );
 
         //Finally move it into the list
         fruit_list << std::move(list_item);
     }
     
     // Copy content of prebuilding HTML5 template
-    auto content = tag::prebuilds::HTML5;
+    auto content = prebuilds::HTML5;
 
     // Add list into body tag
-    content.get<tag::html>().get<tag::body>() << std::move(fruit_list);
+    content.get<html>().get<body>() << std::move(fruit_list);
 
     // Add content to file
     index_html << (std::string)content;

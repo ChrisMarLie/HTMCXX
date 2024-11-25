@@ -3,5 +3,7 @@ include(GoogleTest)
 
 add_executable(tag_test tag_test.cc)
 target_link_libraries(tag_test PRIVATE htmcxx::htmcxx GTest::gtest_main)
+target_compile_options(tag_test INTERFACE ${SANITIZERS} ${WARNINGS})
+target_link_options(tag_test INTERFACE ${SANITIZERS} ${WARNINGS})
 
 gtest_discover_tests(tag_test)

@@ -1,8 +1,8 @@
 #include <fstream>
 #include "htmcxx.h" 
 
-namespace attr = htmcxx::attributes;
-namespace tag = htmcxx::tags;
+using namespace htmcxx;
+using namespace htmcxx::tags;
 
 
 auto main() -> int
@@ -16,9 +16,9 @@ auto main() -> int
     *           <p style="color: red;"> Hello World! </p>
     *    </section>
     */
-    auto content =  tag::section{attr::id("hello-world-container")}
+    auto content =  section{attributes::id("hello-world-container")}
                     (
-                        tag::p{attr::style("color: red;")}
+                        p{attributes::style("color: red;")}
                         (
                             "Hello World!"
                         )

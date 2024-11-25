@@ -11,6 +11,20 @@
 #include "htmcxx/tags/itag.h"
 #include "htmcxx/attributes/iattribute.h"
 
+template<class T>
+concept ITag = std::derived_from<std::decay_t<T>, htmcxx::tags::itag>;
+
+template <class T>
+concept RangeOfITag = 
+    std::ranges::range<std::decay_t<T>> && 
+    ITag<std::ranges::range_reference_t<std::decay_t<T>>>;
+
+template <class T>
+concept ConvertibleToString = std::convertible_to<std::decay_t<T>, std::string>;
+
+template <class T>
+concept ValidSubelement = ITag<T> || RangeOfITag<T> || ConvertibleToString<T>;
+
 namespace htmcxx::tags
 {
     class text; // forward declaration just for the current file organization
@@ -68,10 +82,11 @@ namespace htmcxx::tags
          * @return A reference to the modified element after adding the nested tags.
          *
          */
-        template <class Self, class... T>
-        inline Self&& operator()(this Self&& self, T &&...elements) noexcept
+        template <class Self, ValidSubelement... T>
+        inline Self&& operator()(this Self&& self, T &&...elements) noexcept 
         {
-            (self.subelements_.emplace_back(self.convert2itag(std::forward<T>(elements))), ...);
+            (self.add_as_itag(std::forward<T>(elements)), ...);
+
             return std::forward<Self>(self);
         }
 
@@ -96,7 +111,7 @@ namespace htmcxx::tags
         /**
          * @brief Format this element as HTML structure and converts it into a string.
          */
-        inline explicit operator std::string() const override
+        inline operator std::string() const override
         {
             std::string formatted = std::format("{}<{}", tabulation_, tag_name());
 
@@ -184,7 +199,7 @@ namespace htmcxx::tags
             T* searched_type = nullptr;
             std::string error_msg;
             
-            if constexpr (std::derived_from<T, tags::itag>)
+            if constexpr (ITag<T>)
             {
                 auto it = std::ranges::find_if(subelements_, search_by_type<T>);
 
@@ -219,9 +234,9 @@ namespace htmcxx::tags
         template <class Self, class T>
         inline Self&& add(this Self&& self, T &&value) noexcept
         {
-            if constexpr (std::derived_from<std::decay_t<T>, tags::itag>)
+            if constexpr (ITag<T>)
             {
-                self.subelements_.emplace_back(self.convert2itag(std::forward<T>(value)));
+                self(std::forward<T>(value));
             }
             else
             {
@@ -243,7 +258,7 @@ namespace htmcxx::tags
         {
             std::size_t elements_erased{0};
 
-            if constexpr(std::derived_from<T, tags::itag>)
+            if constexpr(ITag<T>)
             {
                 elements_erased = std::erase_if(subelements_, search_by_type<T>);
             }
@@ -259,7 +274,7 @@ namespace htmcxx::tags
 
     protected:
 
-        inline explicit html_tag(const std::vector<std::unique_ptr<attributes::iattribute>> &attributes)
+        inline html_tag(const std::vector<std::unique_ptr<attributes::iattribute>> &attributes)
         {
             std::ranges::for_each(attributes,
                                   [this](const auto &attr_ptr)
@@ -291,16 +306,24 @@ namespace htmcxx::tags
     
         //---------------------------------------------------------------
 
-        template <class T>
-        std::unique_ptr<tags::itag> convert2itag(T &&val)
+        template <ValidSubelement T>
+        void add_as_itag(T &&val)
         {
-            if constexpr (std::is_convertible_v<T, std::string>)
+            if constexpr (ITag<T>)
             {
-                return std::make_unique<tags::text>(std::forward<T>(val));
+                this->subelements_.emplace_back(std::make_unique<std::decay_t<T>>(std::forward<T>(val)));
             }
-            else 
+            else if constexpr(RangeOfITag<T>)
             {
-                return std::make_unique<std::decay_t<T>>(std::forward<T>(val));
+                for(auto &&single_value : val) {
+                    this->subelements_.emplace_back(
+                        std::make_unique<std::decay_t<decltype(single_value)>>(std::forward<decltype(single_value)>(single_value))
+                    );
+                }  
+            }
+            else
+            {
+                this->subelements_.emplace_back(std::make_unique<tags::text>(std::forward<T>(val)));
             }
         }
     };
@@ -329,7 +352,7 @@ namespace htmcxx::tags
     public:
         using html_tag<box>::html_tag;
 
-        inline explicit operator std::string() const override
+        inline operator std::string() const override
         {
             return std::ranges::fold_left(this->subelements_, "",
                                           [](const std::string &acc, const std::unique_ptr<itag> &subelement)
@@ -346,7 +369,7 @@ namespace htmcxx::tags
     public:
         using html_tag<meta>::html_tag;
 
-        inline explicit operator std::string() const override
+        inline operator std::string() const override
         {
             std::string formatted = std::format("{}<{}", this->tabulation_, this->tag_name());
 
@@ -372,11 +395,11 @@ namespace htmcxx::tags
     class text : public itag
     {
     public:
-        explicit text(const std::string &value = "") : value_{value} {}
+        text(const std::string &value = "") : value_{value} {}
 
-        explicit text(std::string &&value) : value_{std::move(value)} {}
+        text(std::string &&value) : value_{std::move(value)} {}
 
-        inline explicit operator std::string() const override
+        inline operator std::string() const override
         {
             return this->tabulation_ + value_ + "\n";
         }
@@ -395,7 +418,7 @@ namespace htmcxx::tags
     class doctype final : public text
     {
     public:
-        explicit doctype() : text("<!DOCTYPE html>") {}
+        doctype() : text("<!DOCTYPE html>") {}
     };
 
 } // namespace htmcxx::tags

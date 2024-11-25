@@ -18,27 +18,36 @@
 
 ### Building
 
-Once you have obtained the necessary tools, you will need to download the project:
+Once you have obtained the necessary tools:
+- Download the project:
 ```
 $ git clone https://github.com/ChrisMarLie/HTMCXX.git
 $ cd HTMCXX
 ```
-And build it with following command:
+- Build examples:
 ```
-$ cmake --workflow --preset default
+$ cmake --workflow --preset examples
+
+$ cd build/examples
+```
+- Build and execute tests:
+```
+$ cmake --workflow --preset tests
 ```
 
 ## Usage
 
-Building HTML is very easy. To create a tag, you simply need to create an object of the type you need, and when doing so, you can pass as many HTML attributes as you want, also as objects. To add nested tags within the tag, you simply call your HTML tag as if it were a function, and its parameters are those nested tags. Example:
+Creating HTML tags is straightforward. Simply create an object of the desired tag type and pass any number of HTML attributes as objects during its initialization. To add nested tags within your main tag, call the tag object as if it were a function, with the nested tags provided as its parameters.
+
+Here’s an example:
 ```
-namespace attr = htmcxx::attributes;
-namespace tag = htmcxx::tags;
+using namespace htmcxx;
+using namespace htmcxx::tags;
 
 //Create new section tag with id attribute, and a paragraph inside
-auto tag =  tag::section{attr::id("hello-world-container")}
+auto tag =  section{attributes::id("hello-world-container")}
             (
-                tag::p{attr::style("color: red;")}
+                p{attributes::style("color: red;")}
                 (
                     "Hello World!"
                 )
@@ -50,8 +59,7 @@ Finally, HTML tags can be easily cast to a string:
 //Print elements with its attributes and nested tags
 std::cout << (std::string)tag << std::endl;
 ```
-
-Check more usages in [examples](/examples) and documentation in [HTMCXX](https://chrismarlie.github.io/HTMCXX/)
+Explore more detailed examples [here](https://github.com/ChrisMarLie/HTMCXX/tree/main/examples) and documentation in [HTMCXX](https://chrismarlie.github.io/HTMCXX/)
 
 ## Name exceptions and special tags
 
