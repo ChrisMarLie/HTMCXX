@@ -1,4 +1,5 @@
-# \<HTMCXX\/> - A HTML library for C++23
+![Descripción de la imagen](/docs/htmcxx.png)
+# An HTML library for C++23
 
 ## Description
 
